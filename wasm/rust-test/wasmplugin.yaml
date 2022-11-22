@@ -8,6 +8,7 @@ spec:
     matchLabels:
       app: httpbin
   match:
-    - ports:
-      - number: 8000
-  url: oci://docker.io/dhawton/wasm-rust-test:v0.99.1
+    - mode: SERVER
+    #- ports:
+    #  - number: 81
+  url: oci://docker.io/dhawton/wasm-rust-test:v0.99.2

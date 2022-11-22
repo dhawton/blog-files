@@ -1,4 +1,4 @@
-use log::{info, trace};
+use log::{info};
 use proxy_wasm as wasm;
 use wasm::{types::ContextType, traits::Context};
 
@@ -37,8 +37,9 @@ impl Context for HttpHeaders {}
 
 impl wasm::traits::HttpContext for HttpHeaders {
     fn on_http_request_headers(&mut self, _: usize, _: bool) -> wasm::types::Action {
+        info!("on_http_request_headers: {}", self.context_id);
         for (name, value) in &self.get_http_request_headers() {
-            trace!("#{} - {} = {}", self.context_id, name, value);
+            info!("#{} - {} = {}", self.context_id, name, value);
         }
 
         match self.get_http_request_header(":path") {
@@ -55,6 +56,6 @@ impl wasm::traits::HttpContext for HttpHeaders {
     }
 
     fn on_log(&mut self) {
-        trace!("#{} completed.", self.context_id);
+        info!("#{} completed.", self.context_id);
     }
 }
