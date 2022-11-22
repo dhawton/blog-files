@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use log::{info};
+use log::{info, debug};
 use proxy_wasm as wasm;
 use wasm::{types::Action, types::ContextType};
 
@@ -46,22 +46,35 @@ impl wasm::traits::RootContext for RustTest {
     }
 }
 
-
 impl wasm::traits::Context for HttpHeaders {}
 
 impl wasm::traits::HttpContext for HttpHeaders {
     fn on_http_request_headers(&mut self, _: usize, _: bool) -> wasm::types::Action {
         info!("on_http_request_headers: {}", self.context_id);
         for (name, value) in &self.get_http_request_headers() {
-            info!("#{} - {} = {}", self.context_id, name, value);
+            debug!("#{} - {} = {}", self.context_id, name, value);
         }
 
         match self.get_http_request_header(":path") {
-            Some(path) if path == "/test" => {
+            Some(path) if path == "/get" => {
+                info!("on_http_request_headers: {} - /get intercepted", self.context_id);
                 self.send_http_response(
-                    200,
+                    418,
                     vec![("x-powered-by", "rust"), ("content-type", "text/plain")],
-                    Some(b"Hello from Rust Wasm!"),
+                    Some(b"I'm a teapot
+
+                       (
+            _           ) )
+         _,(_)._        ((
+    ___,(_______).        )
+  ,'__.   /       \\    /\\_
+ /,' /  |\"\"|       \\  /  /
+| | |   |__|       |,'  /
+ \\`.|                  /
+  `. :           :    /
+    `.            :.,'
+      `-.________,-'
+"),
                 );
                 Action::Pause
             }
