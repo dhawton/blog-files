@@ -9,6 +9,6 @@ spec:
       app: httpbin
   match:
     - mode: SERVER
-    #- ports:
-    #  - number: 81
-  url: oci://docker.io/dhawton/wasm-rust-test:v0.99.2
+    - ports:
+      - number: 80
+  url: oci://docker.io/dhawton/wasm-rust-test:v1
