@@ -42,6 +42,8 @@ spec:
   url: oci://docker.io/dhawton/wasm-rust-test:v1.0
 ```
 
+Requests to httpbin's /get should now output HTTP status code 418 along with a teapot ASCII art if the WasmPlugin was successful.
+
 ## License
 
 This project is licensed by [Apache 2.0](LICENSE)
