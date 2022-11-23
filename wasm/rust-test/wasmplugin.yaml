@@ -18,6 +18,6 @@ spec:
     # Define port numbers to match. If not specified, all ports are matched
     # If any one port matches, this condition evaluates to true
     - ports:
-      - number: 81
+      - number: 80
   url: oci://docker.io/dhawton/wasm-rust-test:v1
   imagePullPolicy: Always

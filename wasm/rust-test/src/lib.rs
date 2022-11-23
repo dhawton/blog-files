@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use log::{info, debug};
+use log::{info, debug, trace};
 use proxy_wasm as wasm;
 use wasm::{types::Action, types::ContextType};
 
@@ -46,22 +46,7 @@ impl wasm::traits::RootContext for RustTest {
     }
 }
 
-impl wasm::traits::Context for HttpHeaders {}
-
-impl wasm::traits::HttpContext for HttpHeaders {
-    fn on_http_request_headers(&mut self, _: usize, _: bool) -> wasm::types::Action {
-        info!("on_http_request_headers: {}", self.context_id);
-        for (name, value) in &self.get_http_request_headers() {
-            debug!("#{} - {} = {}", self.context_id, name, value);
-        }
-
-        match self.get_http_request_header(":path") {
-            Some(path) if path == "/get" => {
-                info!("on_http_request_headers: {} - /get intercepted", self.context_id);
-                self.send_http_response(
-                    418,
-                    vec![("x-powered-by", "rust"), ("content-type", "text/plain")],
-                    Some(b"I'm a teapot
+const TEAPOT_ASCII = b"I'm a teapot
 
                        (
             _           ) )
@@ -74,7 +59,24 @@ impl wasm::traits::HttpContext for HttpHeaders {
   `. :           :    /
     `.            :.,'
       `-.________,-'
-"),
+";
+
+impl wasm::traits::Context for HttpHeaders {}
+
+impl wasm::traits::HttpContext for HttpHeaders {
+    fn on_http_request_headers(&mut self, _: usize, _: bool) -> wasm::types::Action {
+        info!("on_http_request_headers: {}", self.context_id);
+        for (name, value) in &self.get_http_request_headers() {
+            trace!("#{} - {} = {}", self.context_id, name, value);
+        }
+
+        match self.get_http_request_header(":path") {
+            Some(path) if path == "/get" => {
+                info!("on_http_request_headers: {} - /get intercepted", self.context_id);
+                self.send_http_response(
+                    418,
+                    vec![("x-powered-by", "rust"), ("content-type", "text/plain")],
+                    Some(TEAPOT_ASCII),
                 );
                 Action::Pause
             }
