@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use log::{info, debug, trace};
+use log::{info, trace};
 use proxy_wasm as wasm;
 use wasm::{types::Action, types::ContextType};
 
@@ -46,7 +46,7 @@ impl wasm::traits::RootContext for RustTest {
     }
 }
 
-const TEAPOT_ASCII = b"I'm a teapot
+const TEAPOT_ASCII: &[u8; 295] = b"I'm a teapot
 
                        (
             _           ) )
